@@ -1,0 +1,101 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Template;
+use Data::Dump qw(dump dd ddx);
+use File::Slurp qw(slurp);
+use Storable qw(fd_retrieve);
+use Getopt::Long qw(:config gnu_getopt);
+use JSON;
+
+my $VERSION = "0.001";
+
+sub PrintHelp()
+{
+    print qq(
+usage: perl-tt TEMPLATE_FILE INPUT > OUTPUT
+
+Generates an OUTPUT file from the given perl Template Toolkit file
+and the INPUT.
+
+The INPUT must be a well-structured hash/list for instance
+in perl dump or json format, see supported input format.
+
+Reads from stdin, writes to stdout.
+
+Inputs and output formats are for now:
+
+- dump: Perl Data::Dump format readable through File::Slurp::slurp()
+- store: Perl Storable format readable through Storable::retrieve()
+- json: JSON format.
+
+The INPUT is accessible from the template through the 'i' variable.
+
+Specific variables can be additionally passed in option -c and are
+added for the template in the 'c' variable.
+
+where options are: 
+    -c|--config key=value
+    --ifmt <INPUT_FORMAT>: input format, one of: dump, store, json. Defaults to: dump
+
+other generic options:
+    -v              : increase verbosity
+    -d              : increase debug level
+    --version       : output version information
+    -h|--help       : output this help screen
+);
+}
+
+sub PrintVersion()
+{
+    print "perl-tt version $VERSION\n"
+}
+
+sub Main() {
+    my $verbosity = 0;
+    my $debug_level = 0;
+    my $input_fmt;
+    my $configs = [];
+
+    GetOptions(
+        'v+' => \$verbosity,
+        'd+' => \$debug_level,
+        'ifmt=s' => \$input_fmt,
+        'c|config=s' => \@$configs,
+        'version' => sub { PrintVersion(); exit 0; },
+        'h|help!'=> sub { PrintHelp(); exit 0; },
+        ) || exit 2;
+
+    my $tt = Template->new();
+    my $template_file = $ARGV[0] || die "unspecified template file";
+    my $input;
+    my %conf_map = map { $_ =~ /^([^=]*)(=(.*))?$/ and $1 => $3 } @$configs;
+    if (defined($ARGV[1])) {
+        my $fh;
+        if ($ARGV[1] eq '-') {
+            $fh = \*STDIN;
+            $input_fmt = 'dump' if (!defined($input_fmt));
+        } else {
+            if (!defined($input_fmt)) {
+                $input_fmt = 'dump' if ($ARGV[1] =~ /.dump$/);
+                $input_fmt = 'store' if ($ARGV[1] =~ /.store$/);
+                $input_fmt = 'json' if ($ARGV[1] =~ /.json$/);
+            }
+            open($fh, '<', $ARGV[1]) or die "can't open input file: $ARGV[1]";
+        }
+        if ($input_fmt eq 'dump') {
+            my $str = slurp($fh);
+            $input = eval $str;
+        } elsif ($input_fmt eq 'store') {
+            $input = fd_retrieve($fh);
+        } elsif ($input_fmt eq 'json') {
+            $input = decode_json(<$fh>);
+        } else {
+            die "unsupported input format: $input_fmt";
+        }
+    }
+    $tt->process($template_file, { c => \%conf_map, i => $input }) or die $tt->error;
+}
+
+Main();

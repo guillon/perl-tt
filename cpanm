@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -eu
+set -o pipefail
+
+cleanup() {
+    local code=$?
+    trap - INT TERM QUIT EXIT
+    [ -d "${tmpdir-}" ] && rm -rf "$tmpdir"
+    exit $code
+}
+trap cleanup INT TERM QUIT EXIT
+tmpdir="$(mktemp -d)"
+
+CPANM_URL="${CPANM_URL:-http://cpanmin.us}"
+CPANM_WGET="${WGET:-wget --no-check-certificate}"
+CPANM_MD5="${CPANM_MD5:-84e920e05521e7fb61b36fc1c67f321a}"
+$CPANM_WGET -O "$tmpdir"/cpanminus "$CPANM_URL"
+if [ -n "$CPANM_MD5" ]; then 
+   md5sum="$(md5sum "$tmpdir"/cpanminus | cut -f1 -d' ')"
+   if [ "$md5sum" != "$CPANM_MD5" ]; then
+     echo "error: invalid md5sum for cpanminus ($md5sum), expected: $CPANM_MD5" >&2
+     echo "       either update expected CPNAM_MD5 in $0, or run as" >&2
+     echo "       env CPANM_MD5='' $0 to disable check" >&2
+     exit 1
+   fi
+fi
+perl "$tmpdir"/cpanminus App::cpanminus ${1+"$@"}
