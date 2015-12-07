@@ -90,6 +90,7 @@ sub Main() {
         } elsif ($input_fmt eq 'store') {
             $input = fd_retrieve($fh);
         } elsif ($input_fmt eq 'json') {
+            local $/ = undef;
             $input = decode_json(<$fh>);
         } else {
             die "unsupported input format: $input_fmt";
