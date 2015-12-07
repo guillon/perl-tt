@@ -9,7 +9,7 @@ use Storable qw(fd_retrieve);
 use Getopt::Long qw(:config gnu_getopt);
 use JSON;
 
-our $VERSION = "1.000_000";
+our $VERSION = "1.000_001";
 
 sub PrintHelp()
 {
