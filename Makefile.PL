@@ -3,11 +3,11 @@
 use inc::Module::Install;
 
 name 'perl-tt';
-version '0.001';
+perl_version '5.010';
 author 'Christophe Guillon <christophe.guillon@st.com>';
 abstract 'Simple script for using perl Template Toolkit';
-license 'perl';
-perl_version '5.010';
+license 'gpl';
+version_from 'script/perl-tt';
 install_script 'perl-tt';
 
 requires 'Scalar::Util' => 0;

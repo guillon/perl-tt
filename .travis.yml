@@ -1,0 +1,22 @@
+language: perl
+perl:
+  - '5.20'
+  - '5.14'
+  - '5.10'
+script:
+  - perl Makefile.PL && make test && make install
+  - examples/hello/run.sh
+  - examples/html/run.sh
+  - make dist && ln -s perl-tt-*.tar.gz perl-tt.tar.gz
+  - mkdir -p bin && pp -o bin/perl-tt.$(uname -m) script/perl-tt
+deploy:
+  provider: releases
+  api_key:
+    secure: t8fQPycrzwsk3s+XEqqM1yIHvcnvUGQuvWXwwCglF5FDD2V404TdiLospJe1wbYI9HTkWuwp90M8MXs5msVR7fRgrEskg0ya1IkxVLe4YLtEd7gaF/nTkXbgdGfGP5NUXXyn70aUdzS0PHXKnQ4o+WfRqyGohGf+ZctXMVafwCSC3muNshZvXBfOYrKGWhBErb94Qb2NgGhqAW3oWUS6rziJ8dcNVFGNjJbSBLEADfTnRRSfu4HmEjlYcup9g/v87bGeXlgd5NItUKaWhiV5X8hSR/YATc1DIdhet5kb8tOodBNcbFwNnEzKaz3PWQpO+wofCtXDDzd6D9oykunQTGTjnr0vHESadztDizinOq5i+/Dp2Pdd6fUn7LBqmG9yIJQ76cksCkeYRkrGXiGJZd7R3vHlK7JRKO36O+RyCFXszAggNfVbLCbKh/I/pyrV3qmCXt9cMstzVtDmds77gD5HTzvnN4PpywXzY1965zYpQeO/pW2KVXWTckICj5P4WmeBGCFd7Zsp9zGtO9XQm+E0/dRHdqAP5+7LNEI9F1HSkUWSDNWDLNapt7q6MhdWTvErkjNtdeE6iirwFK7qwo6/j7+uzCVWctAhGgZCcYmy9/TMbxhibKy40N/Fa2RyQlnDXphPImyXq+k9GMybk0nGsLCTbLu+Nrne5tL5TFI=
+  file:
+    - 'perl-tt.tar.gz'
+    - 'bin/perl-tt.x86_64'
+  on:
+    repo: guillon/perl-tt
+    tags: true
+    perl: '5.10'

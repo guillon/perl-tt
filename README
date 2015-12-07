@@ -9,7 +9,7 @@ Synopsys
 The `perl-tt` script takes some template as input and additional structured
 information passed as JSON or configuration paramaters.
 
-The script can be used in its self executable form `perl-tt.x` on `x86_64`
+The script can be used in its self executable form `perl-tt.x86_64` on `x86_64`
 Linux systems for direct download and usage. Refer to the download section.
 
 
@@ -17,18 +17,18 @@ Usage
 -----
 
 Use the `perl-tt` script with for instance an input `json file`_ and a
-`perl Template Toolkit`_ template. For instance::
+`perl Template Toolkit`_ template. For instance:
 
-    perl-tt hello.txt.tt hello.json
+    perl-tt hello.txt.tt buddy.json
     Hello World!
 
-Where hello.txt.tt is::
+Where hello.txt.tt is:
 
-    Hello [% i.bud %]!
+    Hello [% i.buddy %]!
 
-And hello.json is::
+And buddy.json is:
 
-    { "bud": "World" }
+    { "buddy": "World" }
  
 The JSON object is passed in to the template under the `i` (for input)
 variable.
@@ -38,7 +38,7 @@ the command line with the `-c key=value` option and are available in the
 template under the `c` (for configuration) variable.
 
 For instance a basic `HTML`_ page can be generated from the following
-template::
+template:
 
     cat page.html.tt
     <html>
@@ -50,11 +50,11 @@ template::
       </body>
     </html>
 
-With for instance::
+With for instance:
 
     perl-tt -c title="A title" -c text="A text" page.html.tt >page.html
 
-Which gives::
+Which gives:
 
     cat page.html
     <html>
@@ -67,25 +67,35 @@ Which gives::
     </html>
  
 
+Download
+--------
+
+Download the last release self executable from:
+https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.x86_64
+
+Or get the distribution archive from:
+https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.tar.gz
+
+
 Install
 -------
 
-Install locally in ~/perl5 dependencies and module with::
+Install locally in ~/perl5 dependencies and module with:
 
-    ./cpanm --self-contained --notest .
+    ./cpanm --notest .
 
-Or install dependencies and then build with::
+Or install dependencies and then build with:
 
-    ./cpanm --self-contained --installdeps --notest .
+    ./cpanm --installdeps --notest .
     perl Makefile.PL PREFIX=~/perl5
     make
     make install
 
-Optionally install in a local directory with::
+Optionally install in a local directory with:
 
     ./cpanm -l $PWD/devimage --self-contained --notest .
 
-And make a self contained executable with::
+And make a self contained executable with:
 
     perl -I $PWD/devimage/lib/perl5 devimage/bin/pp -o perl-tt.x devimage/bin/perl-tt
 
@@ -95,6 +105,12 @@ License
 
 Refer to the COPYING and COPYRIGHT files for information.
 
-.. _json file: http://json.org/example
-.. _perl Template Toolkit: http://template-toolkit.org
-.. _HTML: http://www.w3.org/html
+
+References
+----------
+
+Ref to json file: http://json.org/example
+
+Ref to perl Template Toolkit: http://template-toolkit.org
+
+Ref to HTML spec: http://www.w3.org/html
