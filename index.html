@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Perl-tt by guillon</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Perl-tt</h1>
+          <h2>Simple perl Template Toolkit Script</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/guillon/perl-tt/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/guillon/perl-tt/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/guillon/perl-tt" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="perl-tt-template-toolkit-script" class="anchor" href="#perl-tt-template-toolkit-script" aria-hidden="true"><span class="octicon octicon-link"></span></a>perl-tt Template Toolkit Script</h1>
+
+<p>This module provides a simple script for using the perl Template Toolkit.</p>
+
+<h2>
+<a id="synopsys" class="anchor" href="#synopsys" aria-hidden="true"><span class="octicon octicon-link"></span></a>Synopsys</h2>
+
+<p>The <code>perl-tt</code> script takes some template as input and additional structured
+information passed as JSON or configuration paramaters.</p>
+
+<p>The script can be used in its self executable form <code>perl-tt.x</code> on <code>x86_64</code>
+Linux systems for direct download and usage. Refer to the download section.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Use the <code>perl-tt</code> script with for instance an input <code>json file</code>_ and a
+<code>perl Template Toolkit</code>_ template. For instance::</p>
+
+<pre><code>perl-tt hello.txt.tt hello.json
+Hello World!
+</code></pre>
+
+<p>Where hello.txt.tt is::</p>
+
+<pre><code>Hello [% i.bud %]!
+</code></pre>
+
+<p>And hello.json is::</p>
+
+<pre><code>{ "bud": "World" }
+</code></pre>
+
+<p>The JSON object is passed in to the template under the <code>i</code> (for input)
+variable.</p>
+
+<p>Some other variable values can be passed as configuration variables through
+the command line with the <code>-c key=value</code> option and are available in the
+template under the <code>c</code> (for configuration) variable.</p>
+
+<p>For instance a basic <code>HTML</code>_ page can be generated from the following
+template::</p>
+
+<pre><code>cat page.html.tt
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt; [% c.title %] &lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  [% c.text %]
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p>With for instance::</p>
+
+<pre><code>perl-tt -c title="A title" -c text="A text" page.html.tt &gt;page.html
+</code></pre>
+
+<p>Which gives::</p>
+
+<pre><code>cat page.html
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt; A title &lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+  A text
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h2>
+<a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
+
+<p>Install locally in ~/perl5 dependencies and module with::</p>
+
+<pre><code>./cpanm --self-contained --notest .
+</code></pre>
+
+<p>Or install dependencies and then build with::</p>
+
+<pre><code>./cpanm --self-contained --installdeps --notest .
+perl Makefile.PL PREFIX=~/perl5
+make
+make install
+</code></pre>
+
+<p>Optionally install in a local directory with::</p>
+
+<pre><code>./cpanm -l $PWD/devimage --self-contained --notest .
+</code></pre>
+
+<p>And make a self contained executable with::</p>
+
+<pre><code>perl -I $PWD/devimage/lib/perl5 devimage/bin/pp -o perl-tt.x devimage/bin/perl-tt
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Refer to the COPYING and COPYRIGHT files for information.</p>
+
+<p>.. _json file: <a href="http://json.org/example">http://json.org/example</a>
+.. _perl Template Toolkit: <a href="http://template-toolkit.org">http://template-toolkit.org</a>
+.. _HTML: <a href="http://www.w3.org/html">http://www.w3.org/html</a></p>
+        </section>
+
+        <footer>
+          Perl-tt is maintained by <a href="https://github.com/guillon">guillon</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
