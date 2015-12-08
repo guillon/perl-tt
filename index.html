@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html>
   <head>
-    <meta charset="UTF-8">
-    <title>Perl-tt by guillon</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Perl-tt by guillon</title>
   </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">Perl-tt</h1>
-      <h2 class="project-tagline">Simple perl Template Toolkit Script</h2>
-      <a href="https://github.com/guillon/perl-tt" class="btn">View on GitHub</a>
-      <a href="https://github.com/guillon/perl-tt/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/guillon/perl-tt/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
 
-    <section class="main-content">
-      <h1>
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Perl-tt</h1>
+          <h2>Simple perl Template Toolkit Script</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/guillon/perl-tt/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/guillon/perl-tt/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/guillon/perl-tt" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
 <a id="perl-tt-template-toolkit-script" class="anchor" href="#perl-tt-template-toolkit-script" aria-hidden="true"><span class="octicon octicon-link"></span></a>perl-tt Template Toolkit Script</h1>
 
 <p>This module provides a simple script for using the perl Template Toolkit.</p>
@@ -97,11 +109,21 @@ template:</p>
 <h2>
 <a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
 
-<p>Download the last release self executable from:
-<a href="https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.x86_64">https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.x86_64</a></p>
+<p>Download the latest release artifacts from the 
+<a href="https://github.com/guillon/perl-tt/releases/latest">https://github.com/guillon/perl-tt/releases/latest</a> page:</p>
 
-<p>Or get the distribution archive from:
-<a href="https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.tar.gz">https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.tar.gz</a></p>
+<ul>
+<li>get the self contained executable: <code>perl-tt.x86_64</code>
+</li>
+<li>or get the released source archive: <code>perl-tt.tar.gz</code>
+</li>
+<li>or get the git sources archive ,tar,gz or .zip.</li>
+</ul>
+
+<p>Otherwise, clone the latest stable revision with:</p>
+
+<pre><code>git clone https://github.com/guillon/perl-tt.git
+</code></pre>
 
 <h2>
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
@@ -130,9 +152,22 @@ make install
 </code></pre>
 
 <h2>
+<a id="build-status" class="anchor" href="#build-status" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build Status</h2>
+
+<p>The last build status for the stab;e master branch is available there:
+<a href="https://travis-ci.org/guillon/repo-mirror/branches">https://travis-ci.org/guillon/repo-mirror/branches</a>.</p>
+
+<h2>
 <a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
-<p>Refer to the COPYING and COPYRIGHT files for information.</p>
+<p>Refer to the COPYING and COPYRIGHT files for information:</p>
+
+<ul>
+<li>COPYING: <a href="https://raw.githubusercontent.com/guillon/perl-tt/master/COPYING">https://raw.githubusercontent.com/guillon/perl-tt/master/COPYING</a>
+</li>
+<li>COPYRIGHT: <a href="https://raw.githubusercontent.com/guillon/perl-tt/master/COPYRIGHT">https://raw.githubusercontent.com/guillon/perl-tt/master/COPYRIGHT</a>
+</li>
+</ul>
 
 <h2>
 <a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
@@ -142,15 +177,15 @@ make install
 <p>Ref to perl Template Toolkit: <a href="http://template-toolkit.org">http://template-toolkit.org</a></p>
 
 <p>Ref to HTML spec: <a href="http://www.w3.org/html">http://www.w3.org/html</a></p>
+        </section>
 
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/guillon/perl-tt">Perl-tt</a> is maintained by <a href="https://github.com/guillon">guillon</a>.</span>
+        <footer>
+          Perl-tt is maintained by <a href="https://github.com/guillon">guillon</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
+        
+      </div>
+    </div>
   </body>
 </html>
