@@ -3,6 +3,8 @@ perl-tt Template Toolkit Script
 
 This module provides a simple script for using the perl Template Toolkit.
 
+[![Build Status](https://api.travis-ci.org/guillon/perl-tt.png?branch=master)](https://travis-ci.org/guillon/perl-tt/branches)
+
 Synopsys
 --------
 
@@ -70,11 +72,16 @@ Which gives:
 Download
 --------
 
-Download the last release self executable from:
-https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.x86_64
+Download the latest release artifacts from the 
+https://github.com/guillon/perl-tt/releases/latest page:
 
-Or get the distribution archive from:
-https://github.com/guillon/perl-tt/releases/download/v1.0.0/perl-tt.tar.gz
+* get the self contained executable: `perl-tt.x86_64`
+* or get the released source archive: `perl-tt.tar.gz`
+* or get the git sources archive ,tar,gz or .zip.
+
+Otherwise, clone the latest stable revision with:
+
+    git clone https://github.com/guillon/perl-tt.git
 
 
 Install
@@ -100,10 +107,19 @@ And make a self contained executable with:
     perl -I $PWD/devimage/lib/perl5 devimage/bin/pp -o perl-tt.x devimage/bin/perl-tt
 
 
+Build Status
+------------
+
+The last build status for the stab;e master branch is available there:
+https://travis-ci.org/guillon/perl-tt/branches.
+
 License
 -------
 
-Refer to the COPYING and COPYRIGHT files for information.
+Refer to the COPYING and COPYRIGHT files for information:
+
+* COPYING: https://raw.githubusercontent.com/guillon/perl-tt/master/COPYING
+* COPYRIGHT: https://raw.githubusercontent.com/guillon/perl-tt/master/COPYRIGHT
 
 
 References
