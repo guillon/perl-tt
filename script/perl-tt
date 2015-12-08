@@ -14,7 +14,7 @@ our $VERSION = "1.000_001";
 sub PrintHelp()
 {
     print qq(
-usage: perl-tt TEMPLATE_FILE INPUT > OUTPUT
+usage: perl-tt [OPTIONS] TEMPLATE_FILE INPUT > OUTPUT
 
 Generates an OUTPUT file from the given perl Template Toolkit file
 and the INPUT.
@@ -22,22 +22,26 @@ and the INPUT.
 The INPUT must be a well-structured hash/list for instance
 in perl dump or json format, see supported input format.
 
-Reads from stdin, writes to stdout.
-
-Inputs and output formats are for now:
+Supported inputs formats are:
 
 - dump: Perl Data::Dump format readable through File::Slurp::slurp()
 - store: Perl Storable format readable through Storable::retrieve()
 - json: JSON format.
 
-The INPUT is accessible from the template through the 'i' variable.
+The INPUT if specified is accessible from the template through the 'i' variable.
 
-Specific variables can be additionally passed in option -c and are
-added for the template in the 'c' variable.
+Otherwise input files can be passed with the -f KEY=FILE option and are attached to the
+KEY variable for the template.
 
-where options are: 
-    -c|--config key=value
-    --ifmt <INPUT_FORMAT>: input format, one of: dump, store, json. Defaults to: dump
+Additional values can be passed with the -c KEY=VALUE option and are attached as
+configuration variables set for the template accessible through c.KEY variables.
+
+Available OPTIONS are: 
+
+    -c|--config KEY=VALUE : set variable c.KEY to VALUE
+    -f|--file KEY=FILE    : set variable KEY to the content of FILE
+    --ifmt <INPUT_FORMAT> : input format, one of: dump, store, json.
+                            (default: json for stdin or inferred from filename extension)
 
 other generic options:
     -v              : increase verbosity
@@ -52,51 +56,68 @@ sub PrintVersion()
     print "perl-tt version $VERSION\n"
 }
 
+sub load_data_file
+{
+    my ($fname, $input_fmt) = @_;
+    my $fh;
+    my $input;
+    if ($fname eq '-') {
+        $fh = \*STDIN;
+        $input_fmt = 'dump' if (!defined($input_fmt));
+    } else {
+        if (!defined($input_fmt)) {
+            $input_fmt = 'dump' if ($fname =~ /.dump$/);
+            $input_fmt = 'store' if ($fname =~ /.store$/);
+            $input_fmt = 'json' if ($fname =~ /.json$/);
+        }
+        open($fh, '<', $fname) or die "can't open input file: $fname";
+    }
+    if ($input_fmt eq 'dump') {
+        my $str = slurp($fh);
+        $input = eval $str;
+    } elsif ($input_fmt eq 'store') {
+        $input = fd_retrieve($fh);
+    } elsif ($input_fmt eq 'json') {
+        local $/ = undef;
+        $input = decode_json(<$fh>);
+    } else {
+        die "unsupported input format for $fname: $input_fmt";
+    }
+    return $input;
+}
+
 sub Main() {
     my $verbosity = 0;
     my $debug_level = 0;
     my $input_fmt;
     my $configs = [];
+    my $files = [];
 
     GetOptions(
         'v+' => \$verbosity,
         'd+' => \$debug_level,
         'ifmt=s' => \$input_fmt,
         'c|config=s' => \@$configs,
+        'f|file=s' => \@$files,
         'version' => sub { PrintVersion(); exit 0; },
         'h|help!'=> sub { PrintHelp(); exit 0; },
         ) || exit 2;
 
-    my $tt = Template->new({ ABSOLUTE => 1, RELATIVE => 1});
+    my $tt = Template->new({ABSOLUTE => 1,
+                            RELATIVE => 1
+                           });
     my $template_file = $ARGV[0] || die "unspecified template file";
-    my $input;
+    my %input = ();
     my %conf_map = map { $_ =~ /^([^=]*)(=(.*))?$/ and $1 => $3 } @$configs;
-    if (defined($ARGV[1])) {
-        my $fh;
-        if ($ARGV[1] eq '-') {
-            $fh = \*STDIN;
-            $input_fmt = 'dump' if (!defined($input_fmt));
-        } else {
-            if (!defined($input_fmt)) {
-                $input_fmt = 'dump' if ($ARGV[1] =~ /.dump$/);
-                $input_fmt = 'store' if ($ARGV[1] =~ /.store$/);
-                $input_fmt = 'json' if ($ARGV[1] =~ /.json$/);
-            }
-            open($fh, '<', $ARGV[1]) or die "can't open input file: $ARGV[1]";
-        }
-        if ($input_fmt eq 'dump') {
-            my $str = slurp($fh);
-            $input = eval $str;
-        } elsif ($input_fmt eq 'store') {
-            $input = fd_retrieve($fh);
-        } elsif ($input_fmt eq 'json') {
-            local $/ = undef;
-            $input = decode_json(<$fh>);
-        } else {
-            die "unsupported input format: $input_fmt";
-        }
+    push @$files, "i=$ARGV[1]" if defined($ARGV[1]);
+    my %files_map = map { $_ =~ /^([^=]*)(=(.*))?$/ and $1 => $3 } @$files;
+
+    $input{'c'} = \%conf_map;
+    foreach my $key (keys %files_map) {
+        my $file = $files_map{$key};
+        $input{$key} = load_data_file($file, $input_fmt);
     }
-    $tt->process($template_file, { c => \%conf_map, i => $input }) or die $tt->error;
+    $tt->process($template_file, \%input) or die $tt->error;
 }
 
 Main();

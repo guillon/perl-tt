@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title> [% c.title %] </title>
+  </head>
+  <body>
+  [% body.text %]
+
+  <table>
+  [% FOREACH item IN data %]
+  <tr><td>[% item.key %]</td><td>[% item.value %]</td></tr>
+  [% END %]
+  </table>
+  </body>
+</html>

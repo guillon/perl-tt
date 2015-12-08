@@ -7,6 +7,7 @@ script:
   - perl Makefile.PL && make test && make install
   - examples/hello/run.sh
   - examples/html/run.sh
+  - examples/multi/run.sh
   - make dist && ln -s perl-tt-*.tar.gz perl-tt.tar.gz
   - mkdir -p bin && pp -o bin/perl-tt.$(uname -m) script/perl-tt
 deploy:
