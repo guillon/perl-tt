@@ -32,12 +32,17 @@ And buddy.json is:
 
     { "buddy": "World" }
  
-The JSON object is passed in to the template under the `i` (for input)
-variable.
+The buddy.json JSON object file is passed to the template under the `i`
+(for input) variable. Thus the buddy name is retrieved in the template with
+`i.buddy` as shown above.
+
+Alternatively, multiple structured files can be passed with the
+`-f KEY=FILE` option and are then available under the `KEY` variable
+from within the template.
 
 Some other variable values can be passed as configuration variables through
-the command line with the `-c key=value` option and are available in the
-template under the `c` (for configuration) variable.
+the command line with the `-c KEY=VALUE` option and are available in the
+template under the `c.KEY` (for configuration) variable.
 
 For instance a basic `HTML`_ page can be generated from the following
 template:
@@ -68,6 +73,8 @@ Which gives:
       </body>
     </html>
  
+Refer to some examples from the examples source directory at
+https://github.com/guillon/perl-tt/tree/master/examples
 
 Download
 --------
@@ -77,35 +84,64 @@ https://github.com/guillon/perl-tt/releases/latest page:
 
 * get the self contained executable: `perl-tt.x86_64`
 * or get the released source archive: `perl-tt.tar.gz`
-* or get the git sources archive ,tar,gz or .zip.
+* or get the git sources archive ,tar.gz or .zip.
 
 Otherwise, clone the latest stable revision with:
 
     git clone https://github.com/guillon/perl-tt.git
 
+In order to use directly  the self contained executable,
+download it make it avaiable in your executable path:
 
+    mv perl-tt.x86_64 ~/bin/perl-tt
+    chmod +x ~/bin/perl-tt
+    PATH=~/bin:$PATH
+    
 Install
 -------
 
-Install locally in ~/perl5 dependencies and module with:
+Install from sources locally in ~/perl5 with:
 
     ./cpanm --notest .
 
-Or install dependencies and then build with:
+Note that this will also download and install dependencies when
+not available on the system. Hence a correctly configured network
+and HTTP proxy in some cases is required.
+
+Otherwise, be sure to have installed the dependencies first on the
+system, with the package manager for instance. Dependencies can be
+found in the Makefile.PL file:
+https://github.com/guillon/perl-tt/blob/master/Makefile.PL
+
+Optionally install dependencies first and then build with:
 
     ./cpanm --installdeps --notest .
     perl Makefile.PL PREFIX=~/perl5
     make
     make install
 
-Optionally install in a local directory with:
+And use the script as:
+
+    PERL5LIB=~/perl5/lib/perl5 && export PERL5LIB
+    $PWD/devimage/bin/perl-tt
+
+One may install in another directory with:
 
     ./cpanm -l $PWD/devimage --self-contained --notest .
 
-And make a self contained executable with:
+And use the script as:
+
+    PERL5LIB=$PWD/devimage && export PERL5LIB
+    $PWD/devimage/bin/perl-tt
+    
+Optionally, one can then build the self contained executable with:
 
     perl -I $PWD/devimage/lib/perl5 devimage/bin/pp -o perl-tt.x devimage/bin/perl-tt
 
+An use the executable as:
+
+    ./perl-tt.x
+    
 
 Build Status
 ------------
