@@ -67,12 +67,17 @@ Hello World!
 <pre><code>{ "buddy": "World" }
 </code></pre>
 
-<p>The JSON object is passed in to the template under the <code>i</code> (for input)
-variable.</p>
+<p>The buddy.json JSON object file is passed to the template under the <code>i</code>
+(for input) variable. Thus the buddy name is retrieved in the template with
+<code>i.buddy</code> as shown above.</p>
+
+<p>Alternatively, multiple structured files can be passed with the
+<code>-f KEY=FILE</code> option and are then available under the <code>KEY</code> variable
+from within the template.</p>
 
 <p>Some other variable values can be passed as configuration variables through
-the command line with the <code>-c key=value</code> option and are available in the
-template under the <code>c</code> (for configuration) variable.</p>
+the command line with the <code>-c KEY=VALUE</code> option and are available in the
+template under the <code>c.KEY</code> (for configuration) variable.</p>
 
 <p>For instance a basic <code>HTML</code>_ page can be generated from the following
 template:</p>
@@ -106,6 +111,9 @@ template:</p>
 &lt;/html&gt;
 </code></pre>
 
+<p>Refer to some examples from the examples source directory at
+<a href="https://github.com/guillon/perl-tt/tree/master/examples">https://github.com/guillon/perl-tt/tree/master/examples</a></p>
+
 <h2>
 <a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
 
@@ -117,7 +125,7 @@ template:</p>
 </li>
 <li>or get the released source archive: <code>perl-tt.tar.gz</code>
 </li>
-<li>or get the git sources archive ,tar,gz or .zip.</li>
+<li>or get the git sources archive ,tar.gz or .zip.</li>
 </ul>
 
 <p>Otherwise, clone the latest stable revision with:</p>
@@ -125,15 +133,32 @@ template:</p>
 <pre><code>git clone https://github.com/guillon/perl-tt.git
 </code></pre>
 
+<p>In order to use directly  the self contained executable,
+download it make it avaiable in your executable path:</p>
+
+<pre><code>mv perl-tt.x86_64 ~/bin/perl-tt
+chmod +x ~/bin/perl-tt
+PATH=~/bin:$PATH
+</code></pre>
+
 <h2>
 <a id="install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h2>
 
-<p>Install locally in ~/perl5 dependencies and module with:</p>
+<p>Install from sources locally in ~/perl5 with:</p>
 
 <pre><code>./cpanm --notest .
 </code></pre>
 
-<p>Or install dependencies and then build with:</p>
+<p>Note that this will also download and install dependencies when
+not available on the system. Hence a correctly configured network
+and HTTP proxy in some cases is required.</p>
+
+<p>Otherwise, be sure to have installed the dependencies first on the
+system, with the package manager for instance. Dependencies can be
+found in the Makefile.PL file:
+<a href="https://github.com/guillon/perl-tt/blob/master/Makefile.PL">https://github.com/guillon/perl-tt/blob/master/Makefile.PL</a></p>
+
+<p>Optionally install dependencies first and then build with:</p>
 
 <pre><code>./cpanm --installdeps --notest .
 perl Makefile.PL PREFIX=~/perl5
@@ -141,14 +166,31 @@ make
 make install
 </code></pre>
 
-<p>Optionally install in a local directory with:</p>
+<p>And use the script as:</p>
+
+<pre><code>PERL5LIB=~/perl5/lib/perl5 &amp;&amp; export PERL5LIB
+$PWD/devimage/bin/perl-tt
+</code></pre>
+
+<p>One may install in another directory with:</p>
 
 <pre><code>./cpanm -l $PWD/devimage --self-contained --notest .
 </code></pre>
 
-<p>And make a self contained executable with:</p>
+<p>And use the script as:</p>
+
+<pre><code>PERL5LIB=$PWD/devimage &amp;&amp; export PERL5LIB
+$PWD/devimage/bin/perl-tt
+</code></pre>
+
+<p>Optionally, one can then build the self contained executable with:</p>
 
 <pre><code>perl -I $PWD/devimage/lib/perl5 devimage/bin/pp -o perl-tt.x devimage/bin/perl-tt
+</code></pre>
+
+<p>An use the executable as:</p>
+
+<pre><code>./perl-tt.x
 </code></pre>
 
 <h2>
