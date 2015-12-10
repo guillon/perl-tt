@@ -1,7 +1,28 @@
 #!/usr/bin/env perl
+#
+# Copyright (c) STMicroelectronics 2015
+#
+# This file is part of perl-tt.
+#
+# perl-tt is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License v2.0
+# as published by the Free Software Foundation
+#
+# perl-tt is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# v2.0 along with perl-tt. If not, see <http://www.gnu.org/licenses/>.
+#
+#
+# Usage: get usage with perl-tt -h
+#
 
 use strict;
 use warnings;
+use File::Basename;
 use Template;
 use Data::Dump qw(dump dd ddx);
 use File::Slurp qw(slurp);
@@ -11,7 +32,7 @@ use JSON;
 
 our $VERSION = "1.001_000";
 
-sub PrintHelp()
+sub help()
 {
     print qq(
 usage: perl-tt [OPTIONS] TEMPLATE_FILE INPUT > OUTPUT
@@ -37,11 +58,11 @@ Additional values can be passed with the -c KEY=VALUE option and are attached as
 configuration variables set for the template accessible through c.KEY variables.
 
 Available OPTIONS are: 
-
     -c|--config KEY=VALUE : set variable c.KEY to VALUE
     -f|--file KEY=FILE    : set variable KEY to the content of FILE
     --ifmt <INPUT_FORMAT> : input format, one of: dump, store, json.
                             (default: json for stdin or inferred from filename extension)
+    -o OUTPUT             : output file (default: STDOUT)
 
 other generic options:
     -v              : increase verbosity
@@ -51,7 +72,7 @@ other generic options:
 );
 }
 
-sub PrintVersion()
+sub version()
 {
     print "perl-tt version $VERSION\n"
 }
@@ -61,17 +82,19 @@ sub load_data_file
     my ($fname, $input_fmt) = @_;
     my $fh;
     my $input;
+
     if ($fname eq '-') {
         $fh = \*STDIN;
         $input_fmt = 'dump' if (!defined($input_fmt));
     } else {
         if (!defined($input_fmt)) {
-            $input_fmt = 'dump' if ($fname =~ /.dump$/);
+            $input_fmt = 'dump';
             $input_fmt = 'store' if ($fname =~ /.store$/);
             $input_fmt = 'json' if ($fname =~ /.json$/);
         }
-        open($fh, '<', $fname) or die "can't open input file: $fname";
+        open($fh, '<', $fname) or die "ERROR: can't open input file: $fname";
     }
+
     if ($input_fmt eq 'dump') {
         my $str = slurp($fh);
         $input = eval $str;
@@ -81,32 +104,40 @@ sub load_data_file
         local $/ = undef;
         $input = decode_json(<$fh>);
     } else {
-        die "unsupported input format for $fname: $input_fmt";
+        die "ERROR: unsupported input format for $fname: $input_fmt";
     }
     return $input;
 }
 
-sub Main() {
+sub main()
+{
     my $verbosity = 0;
     my $debug_level = 0;
     my $input_fmt;
+    my $output_file;
     my $configs = [];
     my $files = [];
 
     GetOptions(
+        'o=s' => \$output_file,
         'v+' => \$verbosity,
         'd+' => \$debug_level,
         'ifmt=s' => \$input_fmt,
         'c|config=s' => \@$configs,
         'f|file=s' => \@$files,
-        'version' => sub { PrintVersion(); exit 0; },
-        'h|help!'=> sub { PrintHelp(); exit 0; },
+        'version' => sub { version(); exit 0; },
+        'h|help!'=> sub { help(); exit 0; },
         ) || exit 2;
 
     my $tt = Template->new({ABSOLUTE => 1,
                             RELATIVE => 1
                            });
-    my $template_file = $ARGV[0] || die "unspecified template file";
+
+    my $template_file = $ARGV[0]
+        or die "ERROR: unspecified template file: missing argument";
+    (-f $template_file && -r $template_file)
+        or die "ERROR: can't read template file: $template_file";
+
     my %input = ();
     my %conf_map = map { $_ =~ /^([^=]*)(=(.*))?$/ and $1 => $3 } @$configs;
     push @$files, "i=$ARGV[1]" if defined($ARGV[1]);
@@ -117,7 +148,19 @@ sub Main() {
         my $file = $files_map{$key};
         $input{$key} = load_data_file($file, $input_fmt);
     }
-    $tt->process($template_file, \%input) or die $tt->error;
+
+    local *OUTPUT;
+    if (defined($output_file) && $output_file ne "-") {
+        open(OUTPUT, ">", $output_file) or die "ERROR: can't open $output_file: $!";
+    } else {
+        open(OUTPUT, ">&", \*STDOUT) or die "ERROR: can't dup STDOUT: $!";
+    }
+    {
+        local *STDOUT;
+        open(STDOUT, ">&", \*OUTPUT) or die "ERROR: can't dup OUTPUT: $!";
+
+        $tt->process($template_file, \%input) or die "ERROR: $tt->error";
+    }
 }
 
-Main();
+main();

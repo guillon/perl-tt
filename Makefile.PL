@@ -10,6 +10,8 @@ license 'gpl';
 version_from 'script/perl-tt';
 install_script 'perl-tt';
 
+requires 'File::Basename' => 0;
+requires 'Getopt::Long' => 0;
 requires 'Scalar::Util' => 0;
 requires 'Data::Dump'  => 0;
 requires 'File::Slurp'  => 0;
