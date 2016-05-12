@@ -117,6 +117,7 @@ sub main()
     my $output_file;
     my $configs = [];
     my $files = [];
+    my $eval_perl = 0;
 
     GetOptions(
         'o=s' => \$output_file,
@@ -125,12 +126,14 @@ sub main()
         'ifmt=s' => \$input_fmt,
         'c|config=s' => \@$configs,
         'f|file=s' => \@$files,
+        'eval-perl' => \$eval_perl,
         'version' => sub { version(); exit 0; },
         'h|help!'=> sub { help(); exit 0; },
         ) || exit 2;
 
     my $tt = Template->new({ABSOLUTE => 1,
-                            RELATIVE => 1
+                            RELATIVE => 1,
+                            EVAL_PERL => $eval_perl,
                            });
 
     my $template_file = $ARGV[0]
