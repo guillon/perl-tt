@@ -162,7 +162,7 @@ sub main()
         local *STDOUT;
         open(STDOUT, ">&", \*OUTPUT) or die "ERROR: can't dup OUTPUT: $!";
 
-        $tt->process($template_file, \%input) or die "ERROR: $tt->error";
+        $tt->process($template_file, \%input) or die "ERROR: " . $tt->error;
     }
 }
 
