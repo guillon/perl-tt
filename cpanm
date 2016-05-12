@@ -2,26 +2,26 @@
 set -eu
 set -o pipefail
 
-cleanup() {
-    local code=$?
-    trap - INT TERM QUIT EXIT
-    [ -d "${tmpdir-}" ] && rm -rf "$tmpdir"
-    exit $code
-}
-trap cleanup INT TERM QUIT EXIT
-tmpdir="$(mktemp -d)"
-
-CPANM_URL="${CPANM_URL:-http://cpanmin.us}"
+CPANM_URL="${CPANM_URL:-https://github.com/miyagawa/cpanminus/raw/1.7041/cpanm}"
 CPANM_WGET="${WGET:-wget --no-check-certificate}"
-CPANM_MD5="${CPANM_MD5:-84e920e05521e7fb61b36fc1c67f321a}"
-$CPANM_WGET -O "$tmpdir"/cpanminus "$CPANM_URL"
-if [ -n "$CPANM_MD5" ]; then 
-   md5sum="$(md5sum "$tmpdir"/cpanminus | cut -f1 -d' ')"
-   if [ "$md5sum" != "$CPANM_MD5" ]; then
-     echo "error: invalid md5sum for cpanminus ($md5sum), expected: $CPANM_MD5" >&2
-     echo "       either update expected CPNAM_MD5 in $0, or run as" >&2
-     echo "       env CPANM_MD5='' $0 to disable check" >&2
-     exit 1
+CPANM_SHA1SUM="${CPANM_SHA1SUM-f680fb649127da5aa72912e3a2d1e130e38c9220}"
+
+if [ -n "$CPANM_SHA1SUM" -a -f ./cpanminus ]; then
+    echo "$CPANM_SHA1SUM  ./cpanminus" | sha1sum -c &>/dev/null || rm ./cpanminus
+fi
+
+if [ ! -f ./cpanminus ]; then
+    $CPANM_WGET -O ./cpanminus "$CPANM_URL"
+fi
+
+if [ -n "$CPANM_SHA1SUM" ]; then
+   sha1sum="$(sha1sum ./cpanminus | cut -f1 -d' ')"
+   if [ "$sha1sum" != "$CPANM_SHA1SUM" ]; then
+       echo "error: invalid sha1sum for cpanminus ($sha1sum), expected: $CPANM_SHA1SUM" >&2
+       echo "       for downloaded file $CPANM_URL" >&2
+       echo "       either update expected CPNAM_SHA1SUM in $0, or run as" >&2
+       echo "       env CPANM_SHA1SUM='' $0 to disable check" >&2
+       exit 1
    fi
 fi
-perl "$tmpdir"/cpanminus App::cpanminus ${1+"$@"}
+perl ./cpanminus App::cpanminus ${1+"$@"}
